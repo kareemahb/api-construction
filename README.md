@@ -1,14 +1,14 @@
 # 🏗️ Construction Checker
-<<<<<<< HEAD
-
+ 
 A front-end app for people in the trades (construction, roofing, HVAC, plumbing, electrical, and painting). Enter a ZIP code before a job to see live site conditions, weather alerts, a 5-day work forecast, and home-age hazards for that area, all scored for **your** trade.
-
+ 
 🔗 **Live Demo:** [kareemahb.github.io/api-construction](https://kareemahb.github.io/api-construction/)
 
-![alt text](image.png)
+<img width="1433" height="962" alt="image" src="https://github.com/user-attachments/assets/3bcafa92-f26c-49ee-a3fa-0f9905440d36" />
 
+ 
 ## ✨ Features
-
+ 
 - **ZIP code search**: enter a 5-digit ZIP code and click **Check Area**. The field only accepts numbers.
 - **Trade profiles**: pick General Construction, Roofing, HVAC, Plumbing, Electrical, or Painting. Each trade has its own limits for heat, cold, wind, and rain (roofers get stricter wind limits, painters need 50°F+, and so on).
 - **Site Conditions Score (0–100)**: an animated gauge with a verdict (**Good to go**, **Use caution**, or **Hold outdoor work**) and a list of what to watch for.
@@ -25,22 +25,21 @@ A front-end app for people in the trades (construction, roofing, HVAC, plumbing,
 - **Recent searches**: your last 5 ZIP codes appear as one-click chips, and your trade is remembered.
 - **Error handling**: clear messages for invalid or unknown ZIP codes. If one data source is down, the other cards still load.
 - **Responsive design** for phones on the job site.
-
 ## 🔌 APIs Used
-
+ 
 All free, and none of them need an API key.
-
-| API                                                                                       | What it provides                                     |
-| ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [Zippopotam.us](https://www.zippopotam.us/)                                               | Turns a ZIP code into a city, state, and coordinates |
-| [Open-Meteo](https://open-meteo.com/)                                                     | Current weather and the 5-day forecast               |
-| [National Weather Service](https://www.weather.gov/documentation/services-web-api)        | Active weather alerts for the location               |
-| [U.S. Census Bureau ACS](https://www.census.gov/data/developers/data-sets/acs-5year.html) | Year homes were built in each ZIP code               |
-| [Open-Meteo Air Quality](https://open-meteo.com/en/docs/air-quality-api)                  | Current air quality index and pollutants             |
-| [OpenFEMA](https://www.fema.gov/about/openfema/api)                                       | Disaster declarations by state                       |
-
+ 
+| API | What it provides |
+| --- | --- |
+| [Zippopotam.us](https://www.zippopotam.us/) | Turns a ZIP code into a city, state, and coordinates |
+| [Open-Meteo](https://open-meteo.com/) | Current weather and the 5-day forecast |
+| [National Weather Service](https://www.weather.gov/documentation/services-web-api) | Active weather alerts for the location |
+| [U.S. Census Bureau ACS](https://www.census.gov/data/developers/data-sets/acs-5year.html) | Year homes were built in each ZIP code |
+| [Open-Meteo Air Quality](https://open-meteo.com/en/docs/air-quality-api) | Current air quality index and pollutants |
+| [OpenFEMA](https://www.fema.gov/about/openfema/api) | Disaster declarations by state |
+ 
 ## 🔍 How It Works
-
+ 
 ```
 ZIP code ──▶ Zippopotam (city + coordinates)
                  │
@@ -50,169 +49,87 @@ ZIP code ──▶ Zippopotam (city + coordinates)
                  ├──▶ Open-Meteo AQ ───▶ air quality
                  └──▶ OpenFEMA ────────▶ disaster history
 ```
-
+ 
 After the ZIP lookup, the other requests run at the same time with `Promise.allSettled()`, so one slow or broken API doesn't block the rest.
-
+ 
 ### How the score is calculated
-
+ 
 Every location starts at **100**, and points come off for:
-
-| Condition                                     | Points off                    |
-| --------------------------------------------- | ----------------------------- |
-| Thunderstorms                                 | 35                            |
-| Extreme heat or cold (past the trade's limit) | 25–30                         |
-| Strong wind gusts (past the trade's limit)    | 12–30                         |
-| Rain                                          | 15–40, depending on the trade |
-| Snow or ice                                   | 20                            |
-| Active weather alert                          | 10, or 30 if severe           |
-| Air quality index over 100                    | 10–35                         |
-| High UV or humidity (painting)                | 5–10                          |
-
+ 
+| Condition | Points off |
+| --- | --- |
+| Thunderstorms | 35 |
+| Extreme heat or cold (past the trade's limit) | 25–30 |
+| Strong wind gusts (past the trade's limit) | 12–30 |
+| Rain | 15–40, depending on the trade |
+| Snow or ice | 20 |
+| Active weather alert | 10, or 30 if severe |
+| Air quality index over 100 | 10–35 |
+| High UV or humidity (painting) | 5–10 |
+ 
 **75+** is Good to go, **50–74** is Use caution, and **below 50** is Hold outdoor work.
-
+ 
 ## 🧱 Code Structure
-
+ 
 `main.js` uses one class per API, plus the main app class:
-
-| Class                  | Job                                                                           |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| `ZipLookupAPI`         | Gets the city, state, and coordinates for a ZIP code                          |
-| `WeatherAPI`           | Gets current conditions and the 5-day forecast                                |
-| `AlertsAPI`            | Gets active National Weather Service alerts                                   |
-| `HousingAPI`           | Gets home-age data from the Census and calculates the share built before 1980 |
-| `AirQualityAPI`        | Gets the current air quality index and pollutants                             |
-| `DisasterAPI`          | Gets FEMA disaster declarations for the state and removes duplicates          |
-| `ConstructionCheckApp` | Handles the form, scoring, rendering, recent searches, and sharing            |
-
+ 
+| Class | Job |
+| --- | --- |
+| `ZipLookupAPI` | Gets the city, state, and coordinates for a ZIP code |
+| `WeatherAPI` | Gets current conditions and the 5-day forecast |
+| `AlertsAPI` | Gets active National Weather Service alerts |
+| `HousingAPI` | Gets home-age data from the Census and calculates the share built before 1980 |
+| `AirQualityAPI` | Gets the current air quality index and pollutants |
+| `DisasterAPI` | Gets FEMA disaster declarations for the state and removes duplicates |
+| `ConstructionCheckApp` | Handles the form, scoring, rendering, recent searches, and sharing |
+ 
 Trade limits and tips live in the `TRADES` object, so adding a new trade is a few lines of config.
-
+ 
 ## 🎨 Design
-
-| Color | Hex       |
-| ----- | --------- |
-| Ink   | `#121C17` |
+ 
+| Color | Hex |
+| --- | --- |
+| Ink | `#121C17` |
 | Slate | `#2E3B37` |
 | Green | `#2C7A4B` |
-| Sage  | `#DCE5D9` |
+| Sage | `#DCE5D9` |
 | Cream | `#F7F6EE` |
-| Mint  | `#7FC79A` |
-
+| Mint | `#7FC79A` |
+ 
 Fonts: [Michroma](https://fonts.google.com/specimen/Michroma) for headings and [Sora](https://fonts.google.com/specimen/Sora) for body text.
-
+ 
 ## 🛠️ Tech Stack
-
+ 
 - HTML5
 - CSS3 (custom properties, Grid, Flexbox, animations, print styles)
 - JavaScript (ES6 classes, `async`/`await`, Fetch API, `Promise.allSettled`, `localStorage`, Clipboard API)
-  No frameworks, dependencies, or build tools.
-
+No frameworks, dependencies, or build tools.
+ 
 ## 📁 Project Structure
-
+ 
 ```
 api-construction/
 ├── index.html   # Header, ZIP code + trade form, results section
 ├── main.css     # Styling and color palette
 └── main.js      # API classes, scoring, and ConstructionCheckApp
 ```
-
-## 🚀 Getting Started
-
-Try it live on **[GitHub Pages](https://kareemahb.github.io/api-construction/)**, or run it locally:
-
-=======
- 
-A front-end app for people in the trades (construction, HVAC, plumbing, and so on). Enter a ZIP code before a job to check home safety information for that area.
- 
-
-<img width="1430" height="949" alt="image" src="https://github.com/user-attachments/assets/5382d4bc-ce44-4292-b608-e96c50eed15d" />
-
- 
-🔗 **Live Demo:** [kareemahb.github.io/api-construction](https://kareemahb.github.io/api-construction/)
- 
-
- 
-## ✨ Planned Features
- 
-- **ZIP code search**: enter a 5-digit ZIP code and click **Check Area**
-- **Area safety score**: show safety information for that ZIP code from an API
-- **Error handling**: a clear message when no information is found for a ZIP code
-
- 
-## 🧱 Current Status
- 
-| Part | Status |
-| --- | --- |
-| Page layout and ZIP code form (`index.html`) | ✅ Done |
-| `ZipCheckupAPI` class with `getSafeyScore()` | ✅ Started |
-| API base URL | ⬜ Still to add |
-| `ConstructionCheckApp`: form submit handling | ⬜ Still to add |
-| Showing results in `#results` | ⬜ Still to add |
-| Styling (`main.css`) | ⬜ Still to add |
- 
-
- 
-## 🔍 How It Will Work
- 
-```
-ZIP code ──▶ ZipCheckupAPI.getSafeyScore() ──▶ GET {baseURL}/zip/{zip}/score ──▶ results section
-```
- 
-The code is organized into two classes in `main.js`:
- 
-| Class | Job |
-| --- | --- |
-| `ZipCheckupAPI` | Calls the API and returns the score data, or throws an error if the ZIP code isn't found |
-| `ConstructionCheckApp` | Will handle the form, call the API class, and show the results |
- 
-
- 
-## 🛠️ Tech Stack
- 
-- HTML5
-- CSS3
-- JavaScript (ES6 classes, `async`/`await`, Fetch API)
-No frameworks, dependencies, or build tools.
- 
-
- 
-## 📁 Project Structure
- 
-```
-api-construction/
-├── index.html   # Header, ZIP code form, and results section
-├── main.css     # Styling
-└── main.js      # ZipCheckupAPI and ConstructionCheckApp classes
-```
- 
-
  
 ## 🚀 Getting Started
  
 Try it live on **[GitHub Pages](https://kareemahb.github.io/api-construction/)**, or run it locally:
  
->>>>>>> c0c2af714f5f58519d21be94db49f2d44e2f310b
 ```bash
 git clone https://github.com/kareemahb/api-construction.git
 cd api-construction
 ```
-<<<<<<< HEAD
-
+ 
 Open `index.html` with the **Live Server** extension in VS Code.
-
+ 
 ## ⚠️ Disclaimer
-
+ 
 Construction Checker is a planning tool. Always follow OSHA rules, your employer's safety plan, and what you see on site.
-
-## 👩‍💻 Created By
-
-=======
- 
-Open `index.html` in your browser, or use the **Live Server** extension in VS Code.
- 
-
  
 ## 👩‍💻 Created By
  
->>>>>>> c0c2af714f5f58519d21be94db49f2d44e2f310b
 **Kareemah Bahaadur**
 [GitHub](https://github.com/kareemahb)
