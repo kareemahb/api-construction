@@ -3,31 +3,105 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Check job site conditions, weather alerts, and home-age hazards by ZIP code before your next job."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Michroma&family=Sora:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="main.css" />
-    <title>Construction API</title>
+    <title>Construction Checker</title>
   </head>
   <body>
-    <main>
-      <header>
-        <h1>Construction Checker</h1>
-        <p>Check home safety information before your next job.</p>
-      </header>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="./" aria-label="Construction Checker home">
+          <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <path
+              d="M6 32 32 8l26 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="7"
+              stroke-linejoin="miter"
+            />
+            <path
+              d="M14 30v26h36V30"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="5"
+            />
+            <path
+              class="brand-check"
+              d="m22 42 7 7 13-14"
+              fill="none"
+              stroke-width="6"
+              stroke-linecap="square"
+            />
+          </svg>
+          <span class="brand-name">Construction<br />Checker</span>
+        </a>
+        <p class="tagline">Know the site before you roll the truck.</p>
+      </div>
+    </header>
 
-      <form id="zip-form">
-        <label for="zip-input"> ZIP Code </label>
+    <main class="container">
+      <section class="search-card">
+        <h1>Check a job site</h1>
+        <p class="search-intro">
+          Enter a ZIP code to see live site conditions, weather alerts, a 5-day
+          work forecast, and home-age hazards for that area.
+        </p>
 
-        <input
-          id="zip-input"
-          type="text"
-          maxlength="5"
-          placeholder="Enter ZIP Code"
-        />
+        <form id="zip-form" novalidate>
+          <div class="field">
+            <label for="zip-input">ZIP Code</label>
+            <input
+              id="zip-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="5"
+              autocomplete="postal-code"
+              placeholder="e.g. 19104"
+              required
+            />
+          </div>
 
-        <button type="submit">Check Area</button>
-      </form>
+          <div class="field">
+            <label for="trade-select">Your Trade</label>
+            <select id="trade-select"></select>
+          </div>
 
-      <section id="results"></section>
+          <button type="submit" id="check-button">Check Area</button>
+        </form>
+
+        <p id="form-error" class="form-error" role="alert"></p>
+
+        <div id="recent" class="recent" hidden>
+          <span class="recent-label">Recent:</span>
+          <div id="recent-list" class="recent-list"></div>
+        </div>
+      </section>
+
+      <section id="results" class="results" aria-live="polite"></section>
     </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          Data: Zippopotam.us · Open-Meteo · National Weather Service · U.S.
+          Census Bureau (ACS) · OpenFEMA
+        </p>
+        <p>
+          Planning tool only. Always follow OSHA rules, your employer's safety
+          plan, and on-site conditions.
+        </p>
+      </div>
+    </footer>
+
     <script src="main.js"></script>
   </body>
 </html>
